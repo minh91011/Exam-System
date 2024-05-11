@@ -1,0 +1,67 @@
+﻿@model IEnumerable<PROJECT_PRN231.Models.UserExamResult>
+
+@{
+	ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+	<a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.ResultId)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.UserId)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Exam)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Score)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.StartTime)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.EndTime)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.ResultId)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.UserId)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Exam.ExamName)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Score)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.StartTime)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.EndTime)
+				</td>
+				<td>
+					@*
+				@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+				@Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+				@Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+				</td> *@
+			</tr>
+		}
+	</tbody>
+</table>

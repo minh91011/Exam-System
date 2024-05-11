@@ -1,0 +1,169 @@
+﻿@model IEnumerable<PROJECT_PRN231.Models.ExamQuestion>
+
+<style>
+	/* Add this CSS to your stylesheet */
+
+	/* Container for the countdown and questions */
+	.exam-container {
+		margin-bottom: 20px;
+	}
+
+	/* Style the countdown */
+	#countdown {
+		font-size: 24px;
+		color: #007bff; /* Blue color for countdown */
+	}
+
+	/* Style the questions */
+	.question-container {
+		margin-top: 20px;
+		margin-bottom: 20px;
+		border: 1px solid #ced4da; /* Light gray border */
+		border-radius: 8px;
+		padding: 20px;
+		background-color: #f8f9fa; /* Light gray background */
+	}
+
+	.question {
+		margin-bottom: 10px;
+	}
+
+	/* Style the radio buttons */
+	input[type="radio"] {
+		margin-right: 5px;
+	}
+
+	/* Style the finish exam link */
+	.finish-exam-link {
+		display: block;
+		margin-top: 20px;
+		color: #007bff; /* Blue color for link */
+		text-decoration: none;
+		transition: color 0.3s ease;
+	}
+
+		.finish-exam-link:hover {
+			color: #0056b3; /* Darker blue color on hover */
+		}
+</style>
+@{
+	ViewData["Title"] = "Index";
+	int userId = Accessor.HttpContext.Session.GetInt32("UserId").Value;
+	string? examTimeString = ViewData["ExamTime"].ToString();
+	int examTime = int.Parse(examTimeString);
+}
+
+<div class="exam-container">
+	<p>Question</p>
+	<div id="countdown">@examTime</div>
+	@{
+		int i = 0;
+	}
+	@foreach (var item in Model)
+	{
+		 
+			i++;	
+		 
+		<div class="question-container">
+			<p>@i.</p>
+			<div class="question">
+				@Html.DisplayFor(modelItem => item.Question.QuestionText)
+			</div>
+			<form id="form1" runat="server">
+				<div>
+					@foreach (var answer in item.Question.Answers)
+					{
+						if (answer.UserExamQuestionAnswers.Count > 0)
+						{
+							<input type="radio"
+								   name="answer"
+								   value="@answer.AnswerId"
+								   data-questionId="@answer.QuestionId"
+								   data-examId="@Model.FirstOrDefault().ExamId"
+								   data-userId="@userId"
+								   data-isCorrect="@answer.IsCorrect"
+								   checked /> @answer.Value <br />
+						}
+						else
+						{
+							<input type="radio"
+								   name="answer"
+								   value="@answer.AnswerId"
+								   data-questionId="@answer.QuestionId"
+								   data-examId="@Model.FirstOrDefault().ExamId"
+								   data-userId="@userId"
+								   data-isCorrect="@answer.IsCorrect" /> @answer.Value <br />
+						}
+					}
+				</div>
+			</form>
+		</div>
+	}
+</div>
+
+<div>
+	<a class="finish-exam-link" asp-action="FinishExam" asp-route-userId="@userId" asp-route-examId="@Model.FirstOrDefault().ExamId">Finish exam</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	$(document).ready(function () {
+		$('input[type="radio"]').change(function () {
+			if (this.checked) {
+				var userId = $(this).attr("data-userId")
+				var examId = $(this).attr("data-examId");
+				var questionId = $(this).attr("data-questionId");
+				var answerId = $(this).val();
+				var isCorrect = $(this).attr("data-isCorrect");
+				// Add more properties as needed
+				// Make AJAX call to the controller method
+				$.ajax({
+					type: "POST",
+					url: "TakingExam/SelectAnswer",
+					data: {
+						userId: userId,
+						examId: examId,
+						questionId: questionId,
+						answerId: answerId,
+						isCorrect: isCorrect
+					},
+					success: function (response) {
+						console.log("Success");
+						// Handle success response if needed
+					},
+					error: function (xhr, textStatus, errorThrown) {
+						console.log("Error: " + errorThrown);
+						// Handle error if needed
+					}
+				});
+			}
+		});
+	});
+</script>
+
+<script>
+	var countdownElement = document.getElementById('countdown');
+	var remainingTimeInSeconds = @examTime;
+
+	function updateCountdown() {
+		remainingTimeInSeconds--;
+		if (remainingTimeInSeconds <= 0) {
+			clearInterval(countdownInterval);
+			// Change the URL when countdown finishes
+			var url = '@Url.Action("FinishExam", "TakingExam")?userId=' + @userId+'&examId=' + @Model.FirstOrDefault().ExamId
+			window.location.href = url;
+		} else {
+			countdownElement.innerText = formatTime(remainingTimeInSeconds);
+		}
+	}
+
+	var countdownInterval = setInterval(updateCountdown, 1000);
+
+	function formatTime(seconds) {
+		var minutes = Math.floor(seconds / 60);
+		seconds = Math.floor(seconds % 60);
+
+		return ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
+	}
+</script>
+

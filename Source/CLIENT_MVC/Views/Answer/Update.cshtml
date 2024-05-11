@@ -1,0 +1,46 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h2>Edit Answer</h2>
+
+<form method="post" action="Update" class="mt-5" id="updateAnswer">
+    <!-- Input hidden để giữ ID của câu hỏi -->
+    <div class="mb-3">
+        <label for="answerId" class="form-label">Answer Id</label>
+        <!-- Hiển thị trường QuestionText của đối tượng Question -->
+        <input id="answerId" name="answerId" class="form-control" value="@Model.AnswerId" readonly>
+    </div>
+
+    <div class="mb-3" hidden>
+        <label for="QuestionId" class="form-label">Question Id</label>
+        <!-- Hiển thị trường QuestionText của đối tượng Question -->
+        <input type="text" id="QuestionId" name="QuestionId" class="form-control" value="@Model.QuestionId" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="value" class="form-label">Value</label>
+        <!-- Hiển thị trường DifficultyLevel của đối tượng Question -->
+        <input type="text" id="Vvalue" name="Value" class="form-control" value="@Model.Value" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="isCorrect" class="form-label">Is Correct</label>
+        <select id="isCorrect" name="isCorrect" class="form-control" required>
+            <option id="true" value="true">True</option>
+            <option id="true" value="false">False</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-danger" onclick="showSuccessMessage()">Save</button>
+
+</form>
+
+<a href="/Answer/List/@Model.QuestionId"><button class="btn btn-primary mt-1">Back</button></a>
+<a href="/Answer"><button class="btn btn-primary mt-1">Back to List All</button></a>
+
+
+
+

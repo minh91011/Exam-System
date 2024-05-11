@@ -1,0 +1,153 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h1>List Question</h1>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div>
+            <input type="text" name="search" id="searchInput" placeholder="Enter name to search">
+            <button class="btn btn-primary" onclick="searchByName()">Search</button>
+            <a href="question/Add"><button class="btn btn-primary">Add</button></a>
+        </div>
+        <div>
+            <select id="sortSelect">
+                <option value="sort">Sort</option>
+                <option value="name">Sort by Name</option>
+                <option value="id">Sort by Id</option>
+            </select>
+        </div>
+        <table class="table" id="questionTable">
+            <thead>
+                <tr>
+                    <th>QuestionId</th>
+                    <th>QuestionText</th>
+                    <th>QuestionDifficult</th>
+                    <th>Service</th>
+                </tr>
+            </thead>
+            <tbody id="questionTableBody">
+                @foreach (var item in ViewBag.Questions)
+                {
+                    <tr id="row_@item.QuestionId">
+                        <td>@item.QuestionId</td>
+                        <td>@item.QuestionText</td>
+                        <td>@item.DifficultyLevel</td>
+                        <td>
+                            <a href="question/Update/@item.QuestionId"><button class="btn btn-primary">Update</button></a>
+                            <a href="answer/List/@item.QuestionId"><button class="btn btn-danger">Manage Answer</button></a>
+                            <button class="btn btn-danger" onclick="deleteQuestion('@item.QuestionId')">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    function deleteQuestion(questionId) {
+        // Xác nhận việc xóa trước khi thực hiện
+        var confirmDelete = confirm("Are you sure to delete this question?");
+        if (confirmDelete) {
+            // Gửi yêu cầu xóa thông qua API
+            fetch(`https://localhost:8080/api/Question/Delete/${questionId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    // Xóa hàng từ bảng sau khi xóa thành công
+                    var rowToDelete = document.getElementById(`row_${questionId}`);
+                    rowToDelete.parentNode.removeChild(rowToDelete);
+                })
+                .catch(error => {
+                    console.error('There was a problem with your fetch operation:', error);
+                });
+        }
+    }
+
+    //search
+    // Function to handle search by name
+    function searchByName() {
+        var searchValue = document.getElementById("searchInput").value.toLowerCase();
+        var rows = document.querySelectorAll("#questionTableBody tr");
+
+        rows.forEach(row => {
+            var questionText = row.querySelector("th:nth-child(2)").textContent.toLowerCase();
+            if (questionText.includes(searchValue)) {
+                row.style.display = "table-row";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    //sortByName
+    function sortByName() {
+        var table = document.getElementById("questionTable");
+        var tbody = table.getElementsByTagName("tbody")[0];
+        var rows = tbody.getElementsByTagName("tr");
+
+        // Chuyển đổi HTMLCollection sang mảng để sử dụng phương thức sort
+        var rowsArray = Array.prototype.slice.call(rows, 0);
+
+        // Sắp xếp mảng theo nội dung của cột tên (index 1)
+        rowsArray.sort(function (row1, row2) {
+            var name1 = row1.getElementsByTagName("th")[1].innerText.toLowerCase();
+            var name2 = row2.getElementsByTagName("th")[1].innerText.toLowerCase();
+            return name1.localeCompare(name2);
+        });
+
+        // Xóa các hàng cũ khỏi tbody
+        while (tbody.firstChild) {
+            tbody.removeChild(tbody.firstChild);
+        }
+
+        // Thêm các hàng đã sắp xếp vào tbody
+        for (var i = 0; i < rowsArray.length; i++) {
+            tbody.appendChild(rowsArray[i]);
+        }
+    }
+
+    //sortById
+    function sortById() {
+        var table = document.getElementById("questionTable");
+        var tbody = table.getElementsByTagName("tbody")[0];
+        var rows = tbody.getElementsByTagName("tr");
+
+        // Chuyển đổi HTMLCollection sang mảng để sử dụng phương thức sort
+        var rowsArray = Array.prototype.slice.call(rows, 0);
+
+        // Sắp xếp mảng theo nội dung của cột ID (index 0)
+        rowsArray.sort(function (row1, row2) {
+            var id1 = parseInt(row1.getElementsByTagName("th")[0].innerText);
+            var id2 = parseInt(row2.getElementsByTagName("th")[0].innerText);
+            return id1 - id2;
+        });
+
+        // Xóa các hàng cũ khỏi tbody
+        while (tbody.firstChild) {
+            tbody.removeChild(tbody.firstChild);
+        }
+
+        // Thêm các hàng đã sắp xếp vào tbody
+        for (var i = 0; i < rowsArray.length; i++) {
+            tbody.appendChild(rowsArray[i]);
+        }
+    }
+
+    document.getElementById("sortSelect").addEventListener("change", function () {
+        var sortBy = this.value;
+        if (sortBy === "name") {
+            sortByName();
+        } else if (sortBy === "id") {
+            sortById();
+        }
+    });
+
+</script>
+

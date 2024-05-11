@@ -1,0 +1,32 @@
+[
+  {
+    "Name": "Debug",
+    "Projects": [
+      {
+        "Name": "PROJECT_PRN231\\PROJECT_PRN231.csproj",
+        "Action": "Start",
+        "DebugTarget": ""
+      },
+      {
+        "Name": "CLIENT_MVC\\CLIENT_MVC.csproj",
+        "Action": "Start",
+        "DebugTarget": ""
+      }
+    ]
+  },
+  {
+    "Name": "Without debug",
+    "Projects": [
+      {
+        "Name": "PROJECT_PRN231\\PROJECT_PRN231.csproj",
+        "Action": "StartWithoutDebugging",
+        "DebugTarget": ""
+      },
+      {
+        "Name": "CLIENT_MVC\\CLIENT_MVC.csproj",
+        "Action": "StartWithoutDebugging",
+        "DebugTarget": ""
+      }
+    ]
+  }
+]

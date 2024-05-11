@@ -1,0 +1,16 @@
+﻿@{
+	string? username = Accessor.HttpContext.Session.GetString("Username");
+	string? role = Accessor.HttpContext.Session.GetString("Role");
+	if (username == null)
+	{
+		Layout = "_Layout";
+	}
+	else if (string.Equals(role,"ADMIN",StringComparison.OrdinalIgnoreCase))
+	{
+		Layout = "_AdminLayout";
+	}
+	else if (string.Equals(role, "USER", StringComparison.OrdinalIgnoreCase))
+	{
+		Layout = "_UserLayout";
+	}
+}

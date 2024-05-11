@@ -1,0 +1,82 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Home Page";
+}
+<style>
+
+    .content {
+        background-color: #f9f9f9;
+        padding: 40px;
+        margin: 20px auto;
+        max-width: 1200px;
+        height:70vh;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .feature-section, .testimonial-section {
+        margin-bottom: 30px;
+    }
+
+    .feature-item, .testimonial-item {
+        margin-bottom: 15px;
+        padding: 10px;
+        background-color: #fff;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+        .feature-item img, .testimonial-item img {
+            float: left;
+            margin-right: 10px;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+
+        .feature-item p, .testimonial-item blockquote {
+            margin-left: 120px;
+        }
+
+        .testimonial-item blockquote {
+            font-style: italic;
+        }
+
+        .testimonial-item footer {
+            text-align: right;
+            display: block;
+            margin-top: 10px;
+        }
+
+        /* Clearfix for floated images */
+        .feature-item:after, .testimonial-item:after {
+            content: "";
+            display: table;
+            clear:
+</style>
+<div class="text-center">
+    <div class="content">
+        <h2>Welcome to Our Online Exam Portal</h2>
+        <p>Our innovative platform offers a seamless and secure environment for conducting online assessments. Explore our features and get ready to excel in your academic pursuits.</p>
+
+        <!-- Feature Section -->
+        <div class="feature-section">
+            <h3>Features</h3>
+            <div class="feature-item">
+                <img src="https://examonline.in/wp-content/uploads/2020/11/What-Is-Online-Exam.png" alt="Feature 1">
+                <p>Real-time monitoring to ensure exam integrity.</p>
+            </div>
+            <div class="feature-item">
+                <img src="https://examonline.in/wp-content/uploads/2022/08/Frame-39.png" alt="Feature 2">
+                <p>Automated grading for instant results.</p>
+            </div>
+            <div class="feature-item">
+                <img src="https://blog.smarterservices.com/hubfs/What%20Students%20Should%20Expect.jpg" alt="Feature 3">
+                <p>Wide range of question types to suit all subjects.</p>
+            </div>
+        </div>
+ 
+        
+    </div>
+
+</div>

@@ -1,0 +1,237 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Management</title>
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #searchInput {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 300px;
+            margin-right: 10px;
+        }
+
+        #sortSelect {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        #examTable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            #examTable th, #examTable td {
+                padding: 10px;
+                border-bottom: 1px solid #ddd;
+                text-align: left;
+            }
+
+            #examTable th {
+                background-color: #f2f2f2;
+            }
+
+        .action-buttons {
+            display: flex;
+        }
+
+            .action-buttons button {
+                margin-right: 5px;
+            }
+
+                .action-buttons button a {
+                    text-decoration: none;
+                    color: #fff;
+                }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="search-container">
+                <div>
+                @*     <input type="text" name="search" id="searchInput" placeholder="Enter name to search">
+                    <button class="btn btn-primary" onclick="searchByName()">Search</button> *@
+
+                    @{
+                        string? username = Accessor.HttpContext.Session.GetString("Username");
+                        string? role = Accessor.HttpContext.Session.GetString("Role");
+                        if (string.Equals(role, "ADMIN", StringComparison.OrdinalIgnoreCase))
+                        {
+                               <a href="exam/Add"><button class="btn btn-primary">Add</button></a>
+                        }
+                    }
+                    
+                 
+                </div>
+               
+            </div>
+            <table class="table" id="examTable">
+                <thead>
+                    <tr>
+                      
+                        <th>Exam Name</th>
+                        <th>Duration</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="examTableBody">
+                    @foreach (var item in ViewBag.Exams)
+                    {
+                        <tr id="row_@item.ExamId">
+                            
+                            <td>@item.ExamName</td>
+                            <td>@item.Duration</td>
+                            <td class="action-buttons">
+                                <button class="btn btn-danger"><a asp-controller="TakingExam" asp-action="Index" asp-route-examId="@item.ExamId">Take exam</a></button>
+
+                                @{
+                                     if (string.Equals(role, "ADMIN", StringComparison.OrdinalIgnoreCase))
+                                    {
+
+                                        <button class="btn btn-primary"><a href="exam/Update/@item.ExamId">Update</a></button>
+                                        <button class="btn btn-primary"><a href="examquestion/Index/@item.ExamId">Manage question</a></button>
+                                        <button class="btn btn-danger"><a href="question/index">View all questions</a></button>
+                                        <button class="btn btn-danger" onclick="deleteQuestion('@item.ExamId')">Delete</button>
+                                    } 
+                                }                                                          
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<script>
+    function deleteQuestion(examId) {
+        // Xác nhận việc xóa trước khi thực hiện
+        var confirmDelete = confirm("Are you sure to delete this Exam?");
+        if (confirmDelete) {
+            // Gửi yêu cầu xóa thông qua API
+            fetch(`https://localhost:8080/api/Exam/Delete/${examId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    // Xóa hàng từ bảng sau khi xóa thành công
+                    var rowToDelete = document.getElementById(`row_${examId}`);
+                    rowToDelete.parentNode.removeChild(rowToDelete);
+                })
+                .catch(error => {
+                    console.error('There was a problem with your fetch operation:', error);
+                });
+        }
+    }
+
+    //search
+    // Function to handle search by name
+    function searchByName() {
+        var searchValue = document.getElementById("searchInput").value.toLowerCase();
+        var rows = document.querySelectorAll("#examTableBody tr");
+
+        rows.forEach(row => {
+            var questionText = row.querySelector("th:nth-child(2)").textContent.toLowerCase();
+            if (questionText.includes(searchValue)) {
+                row.style.display = "table-row";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    //sortByName
+    function sortByName() {
+        var table = document.getElementById("examTable");
+        var tbody = table.getElementsByTagName("tbody")[0];
+        var rows = tbody.getElementsByTagName("tr");
+
+        // Chuyển đổi HTMLCollection sang mảng để sử dụng phương thức sort
+        var rowsArray = Array.prototype.slice.call(rows, 0);
+
+        // Sắp xếp mảng theo nội dung của cột tên (index 1)
+        rowsArray.sort(function (row1, row2) {
+            var name1 = row1.getElementsByTagName("th")[1].innerText.toLowerCase();
+            var name2 = row2.getElementsByTagName("th")[1].innerText.toLowerCase();
+            return name1.localeCompare(name2);
+        });
+
+        // Xóa các hàng cũ khỏi tbody
+        while (tbody.firstChild) {
+            tbody.removeChild(tbody.firstChild);
+        }
+
+        // Thêm các hàng đã sắp xếp vào tbody
+        for (var i = 0; i < rowsArray.length; i++) {
+            tbody.appendChild(rowsArray[i]);
+        }
+    }
+
+    //sortById
+    function sortById() {
+        var table = document.getElementById("examTable");
+        var tbody = table.getElementsByTagName("tbody")[0];
+        var rows = tbody.getElementsByTagName("tr");
+
+        // Chuyển đổi HTMLCollection sang mảng để sử dụng phương thức sort
+        var rowsArray = Array.prototype.slice.call(rows, 0);
+
+        // Sắp xếp mảng theo nội dung của cột ID (index 0)
+        rowsArray.sort(function (row1, row2) {
+            var id1 = parseInt(row1.getElementsByTagName("th")[0].innerText);
+            var id2 = parseInt(row2.getElementsByTagName("th")[0].innerText);
+            return id1 - id2;
+        });
+
+        // Xóa các hàng cũ khỏi tbody
+        while (tbody.firstChild) {
+            tbody.removeChild(tbody.firstChild);
+        }
+
+        // Thêm các hàng đã sắp xếp vào tbody
+        for (var i = 0; i < rowsArray.length; i++) {
+            tbody.appendChild(rowsArray[i]);
+        }
+    }
+
+    document.getElementById("sortSelect").addEventListener("change", function () {
+        var sortBy = this.value;
+        if (sortBy === "name") {
+            sortByName();
+        } else if (sortBy === "id") {
+            sortById();
+        }
+    });
+
+
+</script>
+

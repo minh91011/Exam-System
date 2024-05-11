@@ -1,0 +1,128 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<style>
+    /* Style for the table */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    /* Style for table header */
+    th {
+        background-color: #f2f2f2;
+        text-align: left;
+        padding: 8px;
+    }
+
+    /* Style for table rows */
+    tr {
+        border-bottom: 1px solid #ddd;
+    }
+
+    /* Style for table data */
+    td {
+        padding: 8px;
+    }
+
+    /* Style for form */
+    form {
+        display: inline; /* Ensures forms are displayed inline */
+    }
+
+    /* Style for submit button */
+    input[type="submit"] {
+        background-color: #dc3545; /* Red color */
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+        /* Style for submit button on hover */
+        input[type="submit"]:hover {
+            background-color: #c82333; /* Darker red color */
+        }
+</style>
+
+<h2>List question of Exam @ViewBag.ExamId</h2>
+<table>
+    <thead>
+        <tr>
+            
+            
+            <th>Question </th>
+            <th>Difficulty Level</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ViewBag.ExamQuestions)
+        {
+            <tr id="row_@item.ExamQuestionId">
+                
+                
+                <td>@item.Question.QuestionText</td>
+                <td>@item.Question.DifficultyLevel</td>
+                <td>
+                    <a href="@Url.Action("List", "Answer", new { id = item.QuestionId })"><button class="btn btn-danger">Manage Answer</button></a>
+                    <button class="btn btn-danger" onclick="deleteExamQuestion('@item.ExamQuestionId')">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+<br />
+
+<h2>Add new question</h2>
+<form method="post" action="Index" class="mt-5" id="addQuestion">
+
+    <div class="mb-3">
+        <input hidden type="text" id="examId" name="ExamId" class="form-control" value="@ViewBag.ExamId" readonly>
+    </div>
+
+
+    <div class="mb-3">
+        <label for="questionText" class="form-label">Question </label>
+        <select id="questionText" name="QuestionId" class="form-select" required>
+            <option value="">Select a Question  </option>
+            @foreach (var question in ViewBag.Questions)
+            {
+                <option value="@question.QuestionId">@question.QuestionText</option>
+            }
+        </select>
+    </div>
+
+    
+
+    <button type="submit" class="btn btn-primary" onclick="return showSuccessMessage()">Add</button>
+</form>
+
+<script>
+    function deleteExamQuestion(examQuestionId) {
+        // Xác nhận việc xóa trước khi gửi yêu cầu xóa
+        var confirmDelete = confirm("Are you sure to delete this exam question?");
+        if (confirmDelete) {
+            // Gửi yêu cầu xóa thông qua API sử dụng AJAX
+            $.ajax({
+                url: 'https://localhost:8080/api/ExamQuestion/Delete/' + examQuestionId,
+                type: 'DELETE',
+                success: function (result) {
+                    // Xóa hàng trong bảng sau khi xóa thành công
+                    $('#row_' + examQuestionId).remove();
+                    alert("Deleted successfully!");
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    // Xử lý lỗi nếu có
+                    alert('Error deleting exam question: ' + errorThrown);
+                }
+            });
+        }
+    }
+</script>
+
+

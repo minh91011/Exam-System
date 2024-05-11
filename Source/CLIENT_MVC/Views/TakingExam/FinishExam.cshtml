@@ -1,0 +1,81 @@
+﻿@model PROJECT_PRN231.Models.UserExamResult
+
+@{
+    ViewData["Title"] = "FinishExam";
+}
+<style>
+    /* Add this CSS to your stylesheet */
+    /* Style the container */
+    .container {
+        margin: 20px auto;
+        max-width: 800px;
+        padding: 20px;
+        background-color: #f8f9fa; /* Light gray background */
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    }
+
+    /* Style the headings */
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    h4 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    /* Style the definition list */
+    dl {
+        display: grid;
+        grid-template-columns: auto auto;
+        row-gap: 10px;
+        column-gap: 20px;
+    }
+
+    /* Style the definition term */
+    dt {
+        font-weight: bold;
+    }
+
+    /* Style the definition description */
+    dd {
+        margin: 0;
+    }
+
+    /* Style the back to list link */
+    .back-to-list-link {
+        display: block;
+        margin-top: 20px;
+        color: #007bff; /* Blue color for link */
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+        .back-to-list-link:hover {
+            color: #0056b3; /* Darker blue color on hover */
+        }
+
+</style>
+<div class="container">
+    <h1>Finish Exam</h1>
+    <div>
+        <h4>User Exam Result</h4>
+        <hr />
+        <dl>
+            
+            <dt>Exam</dt>
+            <dd>@Html.DisplayFor(model => model.Exam.ExamName)</dd>
+            <dt>Score</dt>
+            <dd>@Html.DisplayFor(model => model.Score)</dd>
+            <dt>Start Time</dt>
+            <dd>@Html.DisplayFor(model => model.StartTime)</dd>
+            <dt>End Time</dt>
+            <dd>@Html.DisplayFor(model => model.EndTime)</dd>
+        </dl>
+    </div>
+    <div>
+        <a class="back-to-list-link" asp-controller="Exam" asp-action="Index">Back to List</a>
+    </div>
+</div>

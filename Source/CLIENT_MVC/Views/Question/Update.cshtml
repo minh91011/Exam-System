@@ -1,0 +1,33 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h2>Edit Question</h2>
+
+<form method="post" action="Update" class="mt-5" id="updateQuestion">
+    <!-- Input hidden để giữ ID của câu hỏi -->
+    <div class="mb-3">
+        <label for="questionId" class="form-label">Question Id</label>
+        <!-- Hiển thị trường QuestionText của đối tượng Question -->
+        <input id="questionId" name="QuestionId" class="form-control" value="@Model.QuestionId" readonly>
+    </div>
+
+    <div class="mb-3">
+        <label for="questionText" class="form-label">Question Text</label>
+        <!-- Hiển thị trường QuestionText của đối tượng Question -->
+        <input type="text" id="questionText" name="QuestionText" class="form-control" value="@Model.QuestionText" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="difficulty" class="form-label">Difficulty Level</label>
+        <!-- Hiển thị trường DifficultyLevel của đối tượng Question -->
+        <input type="number" id="difficulty" name="DifficultyLevel" class="form-control" value="@Model.DifficultyLevel" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary" onclick="showSuccessMessage()">Save</button>
+    <button type="submit" class="btn btn-danger" asp-controller="Question" asp-action="Delete">Delete</button>
+</form>
+
+<a href="/Question"><button class="btn btn-primary mt-1">Back</button></a>
